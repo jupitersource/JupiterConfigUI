@@ -23,7 +23,7 @@ steps:
     customCommand: 'run build'
 - task: CopyFiles@2
   inputs:
-    targetFolder: '$(Build.ArtifactStagingDirectory)'      
+    targetFolder: '$(Build.ArtifactStagingDirectory)/build/**'      
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
