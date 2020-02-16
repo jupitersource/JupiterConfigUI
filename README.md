@@ -1,3 +1,10 @@
+## Important Links :
+
+- Function App Home : http://zupiterfunctionapp.azurewebsites.net
+- Function App Swagger : http://zupiterfunctionapp.azurewebsites.net/api/swagger/ui#/
+- UI Azure App : https://jupiteruiconfig.azurewebsites.net/#/
+- Postman collection : https://www.postman.com/collections/da9b3f8231927000f813
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
