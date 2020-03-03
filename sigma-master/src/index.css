@@ -103,3 +103,9 @@ body .p-dialog .p-dialog-titlebar .p-dialog-titlebar-icon{
 .right{
   text-align: right !important;
 }
+.layout-footer {
+  position: fixed !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+}

@@ -14,33 +14,20 @@ import ModelTemplate from "./ModelTemplate";
 class AddTemplate extends Component {
     constructor(props) {
         super(props);
-
-        this.toggle = this.toggle.bind(this);
-        this.state = {
-            isOpen: false,
-            name: null,
-            desc: null,
-            cars: [],
-            visible: true,
-            checked: false
-        };
-        this.onClick = this.onClick.bind(this);
-            this.onHide = this.onHide.bind(this);
+        this.state = {           
+            activeIndex: 0, 
+            templateBtnText: 'Save',           
+        };    
+            this.nextTemplateClick = this.nextTemplateClick.bind(this);
         }
     
-        onClick() {
-            this.setState({visible: true});
+        nextTemplateClick()
+        {
+            this.setState({ 
+                activeIndex: 1
+              });    
         }
-    
-        onHide() {
-            this.setState({visible: false});
-        }
-        
-    toggle() {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
-    }
+     
     componentDidMount() {
         fetch('https://jsonplaceholder.typicode.com/users')
   .then(response => response.json())
@@ -54,29 +41,28 @@ class AddTemplate extends Component {
        
         return (
               
-                <div className="p-grid" style={{display:'block'}}>
-                <div className="p-col-12">
-                <Panel header="Add Template">
-   
-                      
-                        <div className="p-grid">
-                           
-                            <div className="p-col-12">
-                                <InputText type="text" placeholder="Name" className="p-col-12"/>
-                            </div>
-                            <div className="p-col-12">
-                                <InputText type="text" placeholder="Description" className="p-col-12"/>
-                            </div>
-                            
-                          
-                        </div>
+            <div className="p-col-12">
+            <Panel header="Add Template">
+
                   
-                </Panel>          
-                   
+            <div className="p-grid p-fluid" >
+                            <div className="p-col-4" style={{padding:'.75em'}}>
+                            <label htmlFor="vin">Name</label></div>
+                            <div className="p-col-8" style={{padding:'.5em'}}>
+                                <InputText id="vin" value=""/>
+                            </div>
+                            <div className="p-col-4" style={{padding:'.75em'}}><label htmlFor="year">Description</label></div>
+                            <div className="p-col-8" style={{padding:'.5em'}}>
+                            <InputText id="vin" value=""/>
+                            </div>
+
+                    </div>
+              <div id="addTempFooter">
+          <Button icon="pi pi-check" onClick={this.nextTemplateClick}  label={this.state.templateBtnText} />
+        </div>
+            </Panel>          
+               
 </div>
-</div>
-                
-                 
          
         )
     }
