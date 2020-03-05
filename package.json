@@ -1,7 +1,6 @@
 {
     "name": "Zupitar",
     "version": "3.0.1-SNAPSHOT",
-    "homepage": "/sigma-react",
     "private": false,
     "repository": {
         "type": "git",
