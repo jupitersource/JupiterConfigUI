@@ -7,9 +7,10 @@ import ModelComponent from "./ModelComponent";
 import { InputText } from 'primereact/inputtext';
 import { InputSwitch } from 'primereact/inputswitch';
 import { Panel } from 'primereact/panel';
-
+import {Growl} from 'primereact/growl';
 import { Dialog } from 'primereact/dialog';
 import { CarService } from '../service/CarService';
+import { ApiService } from '../service/ApiService';
 
 
 class PropertyComponent extends Component {
@@ -17,13 +18,20 @@ class PropertyComponent extends Component {
         super(props);
         this.state = {
 
-
         };
 
         this.state = {
-
+            visible: false,
+            displayDialog: false,
+            key:'',
+            value: '',
+            isOveride: ''
         };
         this.carservice = new CarService();
+        this.apiService = new ApiService();
+        this.updateProperty = this.updateProperty.bind(this);
+        this.save = this.save.bind(this);
+        this.delete = this.delete.bind(this);
     }
 
     componentDidMount() {
@@ -35,10 +43,70 @@ class PropertyComponent extends Component {
             */
         this.carservice.getCarsSmall().then(data => this.setState({ cars: data }));
     }
+
+    updateProperty(property, value) {
+       // let car = this.state.car;
+        //car[property] = value;
+        this.setState({ 
+           // key: key,
+            //value: value,
+            //isOveride: isover 
+        });
+        
+    }
+    save() {
+       /* let cars = [...this.state.cars];
+        if (this.newCar)
+            cars.push(this.state.car);
+        else
+            cars[this.findSelectedCarIndex()] = this.state.car;
+            */
+           this.apiService.savePropertyInfo('',this.state.key, this.state.value, this.state.isOveride);
+           this.showSuccess();
+            this.setState({ key: '', value: '', isOveride: '', displayDialog: false });
+        
+        }
+
+    delete() {
+        let index = this.findSelectedCarIndex();
+        this.setState({
+            cars: this.state.cars.filter((val, i) => i !== index),
+            selectedCar: null,
+            car: null,
+            displayDialog: false
+        });
+    }
+    showSuccess() {
+        this.growl.show({severity: 'success', summary: 'Success', detail: 'Record submitted'});
+    }
+
+
     render() {
+console.log(this.props.templateData);
+        const  tempalteDataList = this.props.templateData.map((cell, i) => {
+              return  <div className="p-grid">
+              <div className="p-col-4">Key</div>
+              <div className="p-col-8">
+                 {cell.key}
+              </div>
+             
+                  <div className="p-col-4">Value
+                </div>
+              <div className="p-col-8">
+                   {cell.value}
+            </div> 
+            <div className="p-col-4">isOverride
+                </div>
+              <div className="p-col-8">
+                   {cell.isOverride.toString()}
+            </div>            
+          </div>  ;       
+          });           
+        console.log(tempalteDataList);
+
         let headerTable1 = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Properties
           <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-plus"
-                onClick={(e) => this.setState({ visible: true })}></i> </span>
+                onClick={(e) => this.setState({ displayDialog: true })}></i> </span>
             <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}>  <i class="pi pi-pencil"></i> </span>
             <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-copy"></i>  </span>
             <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-trash"></i> </span>
@@ -48,22 +116,12 @@ class PropertyComponent extends Component {
             <Button label="Delete" icon="pi pi-times" onClick={this.delete} />
             <Button label="Save" icon="pi pi-check" onClick={this.save} />
         </div>;
+        
         return (
             <div>
-                <div className="p-grid">
-                    <div className="p-col-4">Key</div>
-                    <div className="p-col-8">Sample Key 1</div>
-                </div>
-                <div className="p-grid">
-                    <div className="p-col-4">Value</div>
-                    <div className="p-col-8">Sample value Here
-    </div>
-                </div>
-                <div className="p-grid">
-                    <div className="p-col-4">is Override</div>
-                    <div className="p-col-8">Sample value Here
-    </div>
-                </div>
+                  <Growl ref={(el) => this.growl = el}></Growl>
+              
+                {tempalteDataList}              
 
                 <div className={this.state.displayPropertyModel}>
 
@@ -84,24 +142,22 @@ class PropertyComponent extends Component {
                         <Dialog visible={this.state.displayDialog} width="300px" header="Property Details"
                             modal={true} footer={dialogFooterControls} onHide={() => this.setState({ displayDialog: false })}>
                             {
-                                this.state.car &&
-
+                               
                                 <div className="p-grid p-fluid">
                                     <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="vin">Key</label></div>
                                     <div className="p-col-8" style={{ padding: '.5em' }}>
-                                        <InputText id="vin" onChange={(e) => { this.updateProperty('vin', e.target.value) }} value={this.state.car.vin} />
+                                        <InputText id={this.state.key} value={this.state.key} onChange={(e) => this.setState({key: e.target.value})} /> 
                                     </div>
 
                                     <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="year">Value</label></div>
                                     <div className="p-col-8" style={{ padding: '.5em' }}>
-                                        <InputText id="year" onChange={(e) => { this.updateProperty('year', e.target.value) }} value={this.state.car.year} />
+                                        <InputText id={this.state.value} value={this.state.value} onChange={(e) => this.setState({value: e.target.value})} /> 
                                     </div>
 
                                     <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="brand">Is Override</label></div>
                                     <div className="p-col-8" style={{ padding: '.5em' }}>
                                         <InputText id="brand"
-                                            onChange={(e) => { this.updateProperty('brand', e.target.value) }}
-                                            value={this.state.car.brand} />
+                                            value={this.state.isOverride} onChange={(e) => this.setState({isOveride: e.target.value})} />  
                                     </div>
                                 </div>
                             }

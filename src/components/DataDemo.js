@@ -22,7 +22,7 @@ import CreateTemplate from './CreateTemplate';
 import AddTemplate from './AddTemplate';
 import { ApiService } from '../service/ApiService';
 import { CarService } from '../service/CarService';
-
+import axios from "axios";
 
 export class DataDemo extends Component {
 
@@ -57,7 +57,12 @@ export class DataDemo extends Component {
                 { label: 'Template', url: '#' }
             ],
             activeTemplateId: '',
-            templateList: []
+            selectedTemplateId: '',
+            templateList: [],
+            templateListData: [],
+            propertyData: [],
+            deviceData: [],
+            transformData: []
         };
         this.apiService = new ApiService();
         this.carservice = new CarService();
@@ -79,16 +84,37 @@ export class DataDemo extends Component {
         this.apiService.getSampleData().then(data => this.setState({ dataTableValue: data }));
         this.apiService.getAllTemplatesData().then(data => this.setState({ templateList: data }));
         console.log(this.state.templateList);
-    }
+        (async () => {
+            try {
+                this.setState({templateListData: await this.apiService.makeGetRequest()});
+                console.log("------------------------------------");
+        console.log(this.state.templateListData);
+            } catch (e) {
+                //...handle the error...
+            }
+        })();
 
+        (async () => {
+            try {
+                this.setState({transformData: await this.apiService.fetchTransformAttributes()});
+                console.log("------------------------------------");
+        console.log(this.state.transformData);
+            } catch (e) {
+                //...handle the error...
+            }
+        })();
+
+      
+       
+    }
+    
     save() {
         let cars = [...this.state.cars];
         if (this.newCar)
             cars.push(this.state.car);
         else
             cars[this.findSelectedCarIndex()] = this.state.car;
-
-        this.setState({ cars: cars, selectedCar: null, car: null, displayDialog: false });
+            this.setState({ cars: cars, selectedCar: null, car: null, displayDialog: false });
     }
 
     delete() {
@@ -121,7 +147,7 @@ export class DataDemo extends Component {
 
     handleClick(e) {
         let breadcrumbItems = this.state.breadcrumbItems;
-        let itemName = 'Template ' + e.currentTarget.dataset.id;
+        let itemName =e.currentTarget.dataset.id;
         // breadcrumbItems.push( "{label:'Template ',url: '#'}");
         if (breadcrumbItems.length > 2) {
             console.log("aaa");
@@ -131,6 +157,13 @@ export class DataDemo extends Component {
             breadcrumbItems.push({ label: itemName })
         }
         console.log(breadcrumbItems);
+
+          const  propData = this.state.templateListData.filter(template =>{
+return template.name == itemName;
+          });
+          console.log(breadcrumbItems);
+          console.log("---------------"+propData[0].properties);
+   
         this.setState({
             activeTemplateId: e.currentTarget.dataset.id,
             displayTransformModel: 'hidden',
@@ -142,6 +175,9 @@ export class DataDemo extends Component {
             displayPropertyModelView: 'show',
             displayTemplateModelView: 'show',
             displayTemplateText: 'hidden',
+            propertyData: propData[0].properties,
+            deviceData: propData[0].deviceAttributes,
+            selectedTemplateId: propData[0].id
         });
     }
     onTemplateNameClick() {
@@ -191,13 +227,34 @@ export class DataDemo extends Component {
                 label={this.state.templateBtnText} />
         </div>;
 
-
-        const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-        const listItems = numbers.map((number) =>
-            <li key={number.toString()} onClick={this.handleClick.bind(this)} data-id={number.toString()}
-                className={this.state.activeTemplateId == number.toString() ? 'active' : ''}>Template {number}</li>
-        );
-
+        const listItems = this.state.templateListData.map((e, i) =>{
+        if (e.name ){
+            console.log(e.id);
+           return <li key={e.name} onClick={this.handleClick.bind(this)} data-id={e.name}
+                className={this.state.activeTemplateId == e.name ? 'active' : ''}>{e.name}</li>
+        }
+    }
+        );       
+             //const tempalteData = this.state.templateListData.map(e =>{
+                 const index = '';
+          const  tempalteData = this.state.templateListData.map((cell, i) => {
+            if (this.state.activeTemplateId == cell.name) {
+              return  <div className="p-grid">
+              <div className="p-col-4">Name</div>
+              <div className="p-col-8">
+                 {cell.name}
+              </div>
+             
+                  <div className="p-col-4">Description
+                </div>
+              <div className="p-col-8">
+                   {cell.description}
+            </div>
+            
+          </div>  ;
+            }          
+          });           
+        console.log(tempalteData);
         let headerTable1 = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Properties
           <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-plus"
                 onClick={(e) => this.setState({ visible: true })}></i> </span>
@@ -268,9 +325,7 @@ export class DataDemo extends Component {
                 <div><BreadCrumb model={this.state.breadcrumbItems} home={breadcrumbHome} /></div>
 
                 <div className="p-grid">
-
                     <div className="p-col-fixed" id="templateList">
-
                         <div class="vertical-menu1">
                             <a href="javascript:void(0);" class="active">Template
   <span style={{ paddingLeft: '10px', paddingRight: '5px', cursor: 'pointer' }}> <i class="pi pi-plus"
@@ -281,46 +336,31 @@ export class DataDemo extends Component {
                             </a>
                         </div>
                         <div class="vertical-menu">
-
                             <ul>
                                 {listItems}
                             </ul>
                         </div>
-
                     </div>
                     <div className="p-col">
                         <div>
-
                             <div className="content-section implementation">
                                 <TabView activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })}>
                                     <TabPanel header="Templates" leftIcon="pi pi-calendar">
                                         <p>
-
                                             <div id="templatePaneldefault" className={this.state.displayTemplateText}>
                                                 <div className="p-grid">
                                                     <div className="p-col-12"><i>Click on + button to create a template</i></div>
                                                 </div>
                                             </div>
                                             <div id="templatePanel" className={this.state.displayTemplateModelView}>
-                                                <div className="p-grid">
-                                                    <div className="p-col-4">Name</div>
-                                                    <div className="p-col-8">Template 1</div>
-                                                </div>
-                                                <div className="p-grid">
-                                                    <div className="p-col-4">Description</div>
-                                                    <div className="p-col-8">Sample Description here Sample Description here Sample Description here Sample Description here Sample Description here Sample Description here
-                                                    Sample Description here Sample Description here Sample Description here Sample Description here
-    </div>
-                                                </div>
-
+                                            
+        {tempalteData}
                                             </div>
-
                                             <div className={this.state.displayTemplateModel}>
                                                 <div className="p-grid" style={{ display: 'block' }}>
                                                     <AddTemplate />
                                                 </div>
                                             </div>
-
                                         </p>
                                     </TabPanel>
                                     <TabPanel header="Properties" leftIcon="pi pi-user">
@@ -331,7 +371,10 @@ export class DataDemo extends Component {
                                             </div>
                                         </div>
                                         <div id="propertyPanel" className={this.state.displayPropertyModelView}>
-                                            <PropertyComponent />
+                                            <PropertyComponent 
+                                            templateData={this.state.propertyData}
+                                            selectedTemplate={this.state.activeTemplateId}
+                                            selectedTemplateId={this.state.selectedTemplateId}/>
                                         </div>
 
                                     </TabPanel>
@@ -356,7 +399,11 @@ export class DataDemo extends Component {
                                             </div>
                                         </div>
                                         <div id="propertyPanel" className={this.state.displayTransformModelView}>
-                                            <TransformAttribute />
+                                           
+                                          <TransformAttribute 
+                                               templateData={this.state.transformData}
+                                               selectedTemplate={this.state.activeTemplateId}
+                                               selectedTemplateId={this.state.selectedTemplateId}/>
                                         </div>
                                     </TabPanel>
                                 </TabView>
