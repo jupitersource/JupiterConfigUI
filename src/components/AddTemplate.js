@@ -40,13 +40,6 @@ class AddTemplate extends Component {
         this.growl.show({severity: 'success', summary: 'Success', detail: 'Record submitted'});
     }
 
-    componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(response => response.json())
-            .then(data => this.setState({ cars: data }));
-        // this.propService.getCarsSmall().then(json => this.setState({cars: json}));
-        console.log("--------------" + this.state.cars);
-    }
     render() {
         let header = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Properties Details </div>;
 

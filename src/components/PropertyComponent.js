@@ -82,29 +82,7 @@ class PropertyComponent extends Component {
 
 
     render() {
-console.log(this.props.templateData);
-        const  tempalteDataList = this.props.templateData.map((cell, i) => {
-              return  <div className="p-grid">
-              <div className="p-col-4">Key</div>
-              <div className="p-col-8">
-                 {cell.key}
-              </div>
-             
-                  <div className="p-col-4">Value
-                </div>
-              <div className="p-col-8">
-                   {cell.value}
-            </div> 
-            <div className="p-col-4">isOverride
-                </div>
-              <div className="p-col-8">
-                   {cell.isOverride.toString()}
-            </div>            
-          </div>  ;       
-          });           
-        console.log(tempalteDataList);
-
-        let headerTable1 = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Properties
+let headerTable1 = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Properties
           <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-plus"
                 onClick={(e) => this.setState({ displayDialog: true })}></i> </span>
             <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}>  <i class="pi pi-pencil"></i> </span>
@@ -118,15 +96,27 @@ console.log(this.props.templateData);
         </div>;
         
         return (
+
             <div>
                   <Growl ref={(el) => this.growl = el}></Growl>
-              
-                {tempalteDataList}              
+                   <div className="p-grid p-fluid" >
+                        <div className="p-col-4" style={{ padding: '.75em' }}>
+                            <label htmlFor="vin">Name</label></div>
+                        <div className="p-col-8" style={{ padding: '.5em' }}>
+                            <InputText id="vin" value={this.props.templateData1}/>
+                        </div>
+                        <div className="p-col-4" style={{ padding: '.75em' }}><label htmlFor="year">Description</label></div>
+                        <div className="p-col-8" style={{ padding: '.5em' }}>
+                        <InputText id="desc" value={this.props.templateData1}  />
+                        
+                        </div>
+
+                    </div>  
 
                 <div className={this.state.displayPropertyModel}>
 
                     <div style={{ padding: '0 10px 10px 10px' }}>
-                        <DataTable value={this.state.cars} responsive="true"
+                        <DataTable value={this.props.templateData} responsive="true"
                             header={headerTable1}
                             paginator={true} paginatorLeft={paginatorLeft}
                             rows={10}
@@ -134,9 +124,9 @@ console.log(this.props.templateData);
                             selectionMode="single" selection={this.state.selectedCar}
                             onSelectionChange={e => this.setState({ selectedCar: e.value })}
                             onRowSelect={this.onCarSelect}>
-                            <Column field="year" header="Key" sortable={true} />
-                            <Column field="brand" header="Value" sortable={true} />
-                            <Column field="color" header="is Override" sortable={true} />
+                            <Column field="key" header="Key" sortable={true} />
+                            <Column field="value" header="Value" sortable={true} />
+                            <Column field="isOverride" header="is Override" sortable={true} />
                         </DataTable>
 
                         <Dialog visible={this.state.displayDialog} width="300px" header="Property Details"

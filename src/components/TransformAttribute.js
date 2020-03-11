@@ -150,7 +150,7 @@ class TransformAttribute extends Component {
           </div>  ;       
           });    
         }
-          console.log(transformDataList);      
+          //console.log(transformDataList);      
     
         let headerTable3 = <div className="p-clearfix" style={{ lineHeight: '1.87em' }}> Transform Attributes
         <span style={{ paddingRight: '10px', float: 'right', cursor: 'pointer' }}> <i class="pi pi-plus"
@@ -180,11 +180,11 @@ class TransformAttribute extends Component {
             <div>
                     <Growl ref={(el) => this.growl = el}></Growl>
               
-               {transformDataList}
+               {/* {transformDataList} */}
 
                 <div className="p-grid" className={this.state.displayTransformModel}>
                     <div style={{ padding: '0 10px 10px 10px' }}>
-                        <DataTable value={this.state.cars} responsive="true"
+                        <DataTable value={this.props.templateData} responsive="true"
                             header={headerTable3}
                             paginator={true} paginatorLeft={paginatorLeft}
                             rows={10}
@@ -192,11 +192,11 @@ class TransformAttribute extends Component {
                             selectionMode="single" selection={this.state.selectedCar}
                             onSelectionChange={e => this.setState({ selectedCar: e.value })}
                             onRowSelect={this.onCarSelect}>
-                            <Column field="year" header="Name" sortable={true} />
-                            <Column field="brand" header="Description" sortable={true} />
-                            <Column field="color" header="Data Type" sortable={true} />
-                            <Column field="brand" header="Formula" sortable={true} />
-                            <Column field="color" header="Eng. Unit" sortable={true} />
+                            <Column field="name" header="Name" sortable={true} />
+                            <Column field="description" header="Description" sortable={true} />
+                            <Column field="datatype" header="Data Type" sortable={true} />
+                            <Column field="engUnit" header="Eng. Unit" sortable={true} />
+                            <Column field="isMetric" header="is Metric" sortable={true} />
                         </DataTable>
 
                         <Dialog visible={this.state.displayDialog} width="300px" header="Transform Attribute Details"

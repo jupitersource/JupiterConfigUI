@@ -80,7 +80,7 @@ export class DataDemo extends Component {
     }
 
     componentDidMount() {
-        this.carservice.getCarsSmall().then(data => this.setState({ cars: data }));
+        //this.carservice.getCarsSmall().then(data => this.setState({ cars: data }));
         this.apiService.getSampleData().then(data => this.setState({ dataTableValue: data }));
         this.apiService.getAllTemplatesData().then(data => this.setState({ templateList: data }));
         console.log(this.state.templateList);
@@ -345,7 +345,8 @@ return template.name == itemName;
                         <div>
                             <div className="content-section implementation">
                                 <TabView activeIndex={this.state.activeIndex} onTabChange={(e) => this.setState({ activeIndex: e.index })}>
-                                    <TabPanel header="Templates" leftIcon="pi pi-calendar">
+                                  
+                                    {/* <TabPanel header="Templates" leftIcon="pi pi-calendar">
                                         <p>
                                             <div id="templatePaneldefault" className={this.state.displayTemplateText}>
                                                 <div className="p-grid">
@@ -362,7 +363,8 @@ return template.name == itemName;
                                                 </div>
                                             </div>
                                         </p>
-                                    </TabPanel>
+                                    </TabPanel> */}
+
                                     <TabPanel header="Properties" leftIcon="pi pi-user">
 
                                         <div id="templatePaneldefault" className={this.state.displayTemplateText}>
@@ -372,6 +374,7 @@ return template.name == itemName;
                                         </div>
                                         <div id="propertyPanel" className={this.state.displayPropertyModelView}>
                                             <PropertyComponent 
+                                            templateData1 = {this.state.activeTemplateId}
                                             templateData={this.state.propertyData}
                                             selectedTemplate={this.state.activeTemplateId}
                                             selectedTemplateId={this.state.selectedTemplateId}/>
